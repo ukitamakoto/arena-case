@@ -10,7 +10,7 @@ O que mais pesa para o usuário:
 
 - **Uma única linha de código causa 4 bugs.** Em `js/controllers/todoCtrl.js:18`, a contagem de pendentes subtrai 1 (`.length -1`). Por isso o contador mostra o número errado e chega a “-1 items left” (BUG-01). O mesmo erro faz o “Mark all as complete” reabrir todas as tarefas quando só falta uma (BUG-02). Também deixa a caixa desmarcada quando tudo está concluído (BUG-07) e mostra o botão “Clear” sem nada concluído (BUG-13). Corrigir essa linha resolve os quatro.
 - **Perda de dados.** Com duas abas abertas, uma apaga as tarefas criadas na outra (BUG-03). Com o armazenamento cheio, a tarefa aparece na tela, mas não é salva, e o campo trava (BUG-04). Um valor inválido no armazenamento deixa a tela em branco (BUG-05).
-- **Uso diário.** Depois de cada tarefa adicionada, o campo fica com 3 espaços em vez de vazio (BUG-06). No celular, a página é desenhada para 980 px e aparece reduzida (BUG-09). Pelo teclado, não é possível excluir nem editar tarefas (BUG-08).
+- **Uso diário.** Depois de cada tarefa adicionada, o campo fica com 3 espaços em vez de vazio (BUG-06). No celular, a página não se ajusta à tela e aparece reduzida (BUG-09). Pelo teclado, não é possível excluir nem editar tarefas (BUG-08).
 
 | Severidade | Quantidade | Bugs |
 |---|---|---|
@@ -44,7 +44,7 @@ Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado.
 | [BUG-06](#bug-06) | Campo de nova tarefa fica com 3 espaços depois de adicionar | Média | Alta | Criação |
 | [BUG-07](#bug-07) | Com todas concluídas, “Mark all” aparece desmarcado e exige 2 cliques | Média | Média | Marcar todas |
 | [BUG-08](#bug-08) | Excluir e editar tarefas não funcionam pelo teclado | Média | Média | Acessibilidade |
-| [BUG-09](#bug-09) | No celular, a página é desenhada para 980 px e aparece reduzida | Média | Média | Responsividade |
+| [BUG-09](#bug-09) | No celular, a página não se ajusta à tela e aparece reduzida | Média | Média | Responsividade |
 | [BUG-10](#bug-10) | AngularJS 1.4.3 sem suporte e com 14 vulnerabilidades conhecidas | Média | Média | Segurança |
 | [BUG-11](#bug-11) | Indicador de foco do teclado foi removido | Média | Baixa | Acessibilidade |
 | [BUG-12](#bug-12) | Checkbox de cada tarefa não tem nome acessível | Média | Baixa | Acessibilidade |
@@ -135,7 +135,7 @@ Animação do passo a passo: [evidencias/BUG-02.gif](evidencias/BUG-02.gif)
 <a id="bug-04"></a>
 ### BUG-04 · Com o armazenamento cheio, a tarefa não é salva e o campo trava
 
-**Severidade:** Alta · **Prioridade:** Baixa (exige o armazenamento do site cheio) · **Reprodutibilidade:** sempre · **Navegador:** Chrome (nos outros, a cota e a mensagem de erro variam)
+**Severidade:** Alta · **Prioridade:** Baixa (exige o armazenamento do site cheio) · **Reprodutibilidade:** sempre · **Navegador:** verificado só no Chrome (a cota do armazenamento muda de um navegador para outro)
 
 **Passos**
 
@@ -242,7 +242,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 **Teste:** `tests/test_acessibilidade.py::test_botao_excluir_e_alcancavel_pelo_teclado`. A edição pelo teclado foi verificada manualmente.
 
 <a id="bug-09"></a>
-### BUG-09 · No celular, a página é desenhada para 980 px e aparece reduzida
+### BUG-09 · No celular, a página não se ajusta à tela e aparece reduzida
 
 **Severidade:** Média · **Prioridade:** Média · **Reprodutibilidade:** sempre, em celular ou no modo dispositivo do DevTools
 
@@ -253,7 +253,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Esperado:** o layout se ajusta à largura da tela.
 
-**Obtido:** a página é montada com 980 px (`window.innerWidth = 980` numa tela de 375 px) e reduzida para caber. O texto das tarefas fica com cerca de 9 px, o rodapé com cerca de 4 px, e os alvos de toque ficam pequenos.
+**Obtido:** a página é montada com cerca de 980 px de largura (`window.innerWidth` vale 981 numa tela de 375 px) e reduzida para caber. O texto das tarefas fica com cerca de 9 px, o rodapé com cerca de 4 px, e os alvos de toque ficam pequenos.
 
 <img src="evidencias/BUG-09.png" width="260" alt="Página reduzida no celular">
 
@@ -444,7 +444,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Passos:** abra o DevTools nas abas Console e Network e recarregue a página.
 
-**Obtido:** `GET /learn.json` retorna 404. Quem pede esse arquivo é `todomvc-common/base.js`, que procura a barra lateral do projeto TodoMVC. `GET /api` também retorna 404: `todoStorage.js:16` procura um backend. Os dois aparecem como erro vermelho no console do Chrome e do Safari a cada carregamento.
+**Obtido:** `GET /learn.json` retorna 404. Quem pede esse arquivo é `todomvc-common/base.js`, que procura a barra lateral do projeto TodoMVC. `GET /api` também retorna 404: `todoStorage.js:16` procura um backend. Os dois aparecem como erro vermelho no console do Chrome e do WebKit a cada carregamento.
 
 **Esperado:** console limpo. Erros esperados poluem o monitoramento e escondem erros reais. A detecção do backend deveria vir de configuração, e o script da barra lateral não deveria estar no produto.
 
@@ -466,7 +466,7 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 
 - Criar tarefa com Enter, aparar os espaços das pontas e ignorar entrada vazia ou só com espaços.
 - HTML e expressões do Angular digitados como tarefa (`<img src=x onerror=alert(1)>`, `{{7*7}}`) aparecem como texto, sem executar nada.
-- Acentos, emoji e textos longos sem espaço quebram a linha sem criar rolagem horizontal.
+- Acentos e emoji aparecem corretamente, e textos longos sem espaço quebram a linha sem criar rolagem horizontal.
 - Concluir e reabrir tarefa; botão excluir no hover; tocar na tarefa no celular mostra o botão excluir.
 - Edição: duplo clique abre o campo com foco; Enter e sair do campo salvam; Esc descarta; texto vazio exclui a tarefa.
 - Filtros “All”, “active” e “Completed” mostram as tarefas certas, destacam o filtro e continuam aplicados depois de recarregar.

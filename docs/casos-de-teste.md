@@ -18,7 +18,7 @@ A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual”
 | CT-06 | Adicionar uma tarefa | Campo volta vazio, com o placeholder | **Falhou** | BUG-06 | `test_campo_fica_vazio_depois_de_adicionar` |
 | CT-07 | Adicionar `<img src=x onerror=alert(1)>`, `{{7*7}}` e `{{constructor.constructor('alert(2)')()}}` | Texto exibido literalmente, sem imagem nem alerta | Passou | | `test_html_e_expressao_angular_aparecem_como_texto` |
 | CT-08 | Adicionar 300 caracteres sem espaço | Quebra de linha, sem rolagem horizontal | Passou | | Manual |
-| CT-09 | Adicionar texto com acentos e emoji | Texto exibido e salvo corretamente | Passou | | Manual |
+| CT-09 | Adicionar texto com acentos e emoji | Texto exibido corretamente | Passou | | Manual |
 | CT-10 | Ler o placeholder | “What needs to be done?” | **Falhou** | BUG-16 | `test_placeholder_do_campo_de_nova_tarefa` |
 
 ## Concluir e excluir

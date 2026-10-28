@@ -37,7 +37,7 @@ uv run pytest --browser-channel chrome                         # Google Chrome i
 uv run pytest --runxfail                                       # mostra a falha real de cada bug
 ```
 
-Resultado em 28/10/2026, por navegador: **23 passed e 27 xfailed** no Chromium e no Chrome. No Firefox e no WebKit, os testes de armazenamento cheio (só Chromium) e de celular (`is_mobile` não existe no Firefox) são pulados. Os relatórios ficam em `reports/relatorio.html` (pytest-html) e `reports/junit.xml`. Se um teste falhar, o trace e o print ficam em `test-results/`.
+Resultado em 28/10/2026, por navegador: **23 passed e 27 xfailed** no Chromium e no Chrome. O teste de armazenamento cheio só roda no Chromium, então é pulado no Firefox e no WebKit. O teste de celular também é pulado no Firefox, que não emula `is_mobile`. Os relatórios ficam em `reports/relatorio.html` (pytest-html) e `reports/junit.xml`. Se um teste falhar, o trace e o print ficam em `test-results/`.
 
 O GitHub Actions (`.github/workflows/testes.yml`) roda a suíte nos três navegadores a cada push e pull request, e publica os relatórios como artefato.
 

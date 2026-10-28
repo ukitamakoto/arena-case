@@ -1,0 +1,19 @@
+[project]
+name = "arena-case"
+version = "0.1.0"
+description = "Testes da aplicação To Do List (desafio técnico Jr. QA Engineer - Arena)"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=9.2.0",
+    "pytest-html>=4.2.0",
+    "pytest-playwright>=0.10.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+base_url = "https://todolist.james.am"
+addopts = "--tracing retain-on-failure --screenshot only-on-failure --output test-results --html=reports/relatorio.html --self-contained-html --junitxml=reports/junit.xml -ra"
+xfail_strict = true
+# Aviso vem do plugin pytest-base-url (fixture base_url), não do código desta suíte.
+filterwarnings = ["ignore:Session-scoped fixtures defined as instance methods:pytest.PytestRemovedIn10Warning"]

@@ -1,0 +1,40 @@
+name: Testes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: ubuntu-24.04 # versão fixa: o --with-deps do Playwright depende da distribuição
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        navegador: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.3.2 # o projeto não publica tag major (v10)
+        with:
+          enable-cache: true
+
+      - name: Instalar dependências (versões travadas no uv.lock)
+        run: uv sync --locked
+
+      - name: Instalar ${{ matrix.navegador }}
+        run: uv run playwright install --with-deps ${{ matrix.navegador }}
+
+      - name: Executar a suíte
+        run: uv run pytest --browser ${{ matrix.navegador }}
+
+      - name: Publicar relatórios
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: relatorio-${{ matrix.navegador }}-${{ github.run_number }}
+          path: |
+            reports/
+            test-results/
+          retention-days: 30

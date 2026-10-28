@@ -1,5 +1,8 @@
-"""Itens não funcionais: cabeçalhos de segurança da resposta e erros de rede no carregamento."""
-from bugs import BUG_22, BUG_23
+"""Itens não funcionais: hospedagem, cabeçalhos de segurança e erros de rede no carregamento."""
+from bugs import BUG_22, BUG_23, BUG_25
+
+# O site é servido de um bucket do Google Cloud Storage com o mesmo nome do domínio (cabeçalhos x-goog-*).
+BUCKET = "https://storage.googleapis.com/todolist.james.am/"
 
 
 @BUG_22
@@ -19,3 +22,10 @@ def test_carregamento_sem_erros_de_rede(page, base_url):
     page.wait_for_load_state("networkidle")
 
     assert falhas == []
+
+
+@BUG_25
+def test_bucket_de_hospedagem_nao_lista_os_arquivos(page):
+    resposta = page.request.get(BUCKET)
+
+    assert "<ListBucketResult" not in resposta.text(), "qualquer pessoa consegue listar os arquivos do bucket"

@@ -51,6 +51,20 @@ def test_armazenamento_cheio_nao_trava_o_campo(todo):
 
 
 @BUG_05
+def test_armazenamento_bloqueado_nao_deixa_a_tela_em_branco(context):
+    # Mesmo erro que o Chrome lança quando o usuário bloqueia o salvamento de dados de sites.
+    context.add_init_script("""Object.defineProperty(window, 'localStorage', {get() {
+        throw new DOMException("Failed to read the 'localStorage' property from 'Window': "
+                               + "Access is denied for this document.", 'SecurityError');
+    }});""")
+    page = context.new_page()
+
+    page.goto("/#/")
+
+    expect(page.locator(".new-todo")).to_be_visible()
+
+
+@BUG_05
 def test_dado_invalido_no_armazenamento_nao_deixa_a_tela_em_branco(context):
     context.add_init_script(f"localStorage.setItem('{TodoPage.CHAVE_STORAGE}', '{{corrompido')")
     page = context.new_page()

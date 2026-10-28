@@ -4,19 +4,19 @@
 
 ## 1. Resumo
 
-Encontrei **23 bugs**: 5 de severidade alta, 7 de severidade média e 11 de severidade baixa. Também registrei 3 observações de código que hoje não têm efeito visível. Cada bug tem passos para reproduzir, resultado esperado e obtido, evidência e a causa provável no código.
+Encontrei **25 bugs**: 5 de severidade alta, 7 de severidade média e 13 de severidade baixa. Também registrei 3 observações de código que hoje não têm efeito visível. Cada bug tem passos para reproduzir, resultado esperado e obtido, evidência e a causa provável no código.
 
 O que mais pesa para o usuário:
 
 - **Uma única linha de código causa 4 bugs.** Em `js/controllers/todoCtrl.js:18`, a contagem de pendentes subtrai 1 (`.length -1`). Por isso o contador mostra o número errado e chega a “-1 items left” (BUG-01). O mesmo erro faz o “Mark all as complete” reabrir todas as tarefas quando só falta uma (BUG-02). Também deixa a caixa desmarcada quando tudo está concluído (BUG-07) e mostra o botão “Clear” sem nada concluído (BUG-13). Corrigir essa linha resolve os quatro.
-- **Perda de dados.** Com duas abas abertas, uma apaga as tarefas criadas na outra (BUG-03). Com o armazenamento cheio, a tarefa aparece na tela, mas não é salva, e o campo trava (BUG-04). Um valor inválido no armazenamento deixa a tela em branco (BUG-05).
+- **Perda de dados.** Com duas abas abertas, uma apaga as tarefas criadas na outra (BUG-03). Com o armazenamento cheio, a tarefa aparece na tela, mas não é salva, e o campo trava (BUG-04). Se o navegador bloqueia o armazenamento por configuração de privacidade, ou se há um valor inválido salvo, a tela fica em branco (BUG-05).
 - **Uso diário.** Depois de cada tarefa adicionada, o campo fica com 3 espaços em vez de vazio (BUG-06). No celular, a página não se ajusta à tela e aparece reduzida (BUG-09). Pelo teclado, não é possível excluir nem editar tarefas (BUG-08).
 
 | Severidade | Quantidade | Bugs |
 |---|---|---|
 | Alta | 5 | BUG-01 a BUG-05 |
 | Média | 7 | BUG-06 a BUG-12 |
-| Baixa | 11 | BUG-13 a BUG-23 |
+| Baixa | 13 | BUG-13 a BUG-25 |
 
 ## 2. Como testei
 
@@ -24,7 +24,7 @@ O que mais pesa para o usuário:
 - **Testes exploratórios** em sessões com missão definida: criação, conclusão e contador, edição, exclusão, filtros, persistência, textos, acessibilidade, celular e segurança. As missões estão no [plano de testes](plano-de-testes.md).
 - **Técnicas.** Usei partição de equivalência e valor-limite (0, 1 e 2 ou mais pendentes; texto vazio, só espaços, longo, com acento e emoji) e transição de estados (pendente/concluída; edição com Enter, ao sair do campo e com Esc). Também fiz testes negativos e de robustez: duas abas, armazenamento cheio e dado inválido.
 - **Revisão do código publicado.** Comparei os arquivos servidos com a implementação de referência do TodoMVC para AngularJS ([tastejs/todomvc, commit 2cda67b](https://github.com/tastejs/todomvc/tree/2cda67b20c555f76a67dc596f06d1721f2dd4816/examples/angularjs)). A diferença aponta a linha provável de cada bug e ajuda quem for corrigir.
-- **Ferramentas.** DevTools; axe-core 4.10.2 para acessibilidade; `npm audit` para as dependências; Playwright para reproduzir os bugs nos três motores de navegador e para a [suíte automatizada](../README.md#automação). A suíte cobre 21 dos 23 bugs.
+- **Ferramentas.** DevTools; axe-core 4.10.2 para acessibilidade; `npm audit` para as dependências; Playwright para reproduzir os bugs nos três motores de navegador e para a [suíte automatizada](../README.md#automação). A suíte cobre 23 dos 25 bugs.
 
 **Ambiente:** macOS 26.2; Google Chrome 156.0.8078.48; Chromium 156.0.8078.4, Firefox 157.0 e WebKit 27.2 (motor do Safari) pelo Playwright 1.64.1; celular emulado com 375×667 px no Chromium. A aplicação procura um backend em `/api`, recebe 404 e passa a salvar no `localStorage` do navegador. Os arquivos publicados são de 22/12/2019 (cabeçalho `Last-Modified`) e usam AngularJS 1.4.3.
 
@@ -40,7 +40,7 @@ Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado.
 | [BUG-02](#bug-02) | “Mark all as complete” com 1 pendente reabre todas as tarefas | Alta | Alta | Marcar todas |
 | [BUG-03](#bug-03) | Com duas abas abertas, uma apaga as tarefas criadas na outra | Alta | Média | Persistência |
 | [BUG-04](#bug-04) | Com o armazenamento cheio, a tarefa não é salva e o campo trava | Alta | Baixa | Persistência |
-| [BUG-05](#bug-05) | Valor inválido no armazenamento deixa a aplicação em branco | Alta | Baixa | Persistência |
+| [BUG-05](#bug-05) | Com o armazenamento bloqueado ou com valor inválido, a aplicação fica em branco | Alta | Média | Persistência |
 | [BUG-06](#bug-06) | Campo de nova tarefa fica com 3 espaços depois de adicionar | Média | Alta | Criação |
 | [BUG-07](#bug-07) | Com todas concluídas, “Mark all” aparece desmarcado e exige 2 cliques | Média | Média | Marcar todas |
 | [BUG-08](#bug-08) | Excluir e editar tarefas não funcionam pelo teclado | Média | Média | Acessibilidade |
@@ -59,6 +59,8 @@ Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado.
 | [BUG-21](#bug-21) | Contraste de cor insuficiente em título, filtros e rodapé | Baixa | Baixa | Acessibilidade |
 | [BUG-22](#bug-22) | Sem cabeçalhos de segurança: a página aceita ser embutida em outro site | Baixa | Baixa | Segurança |
 | [BUG-23](#bug-23) | Duas requisições com erro 404 a cada carregamento | Baixa | Baixa | Console |
+| [BUG-24](#bug-24) | Caractere invisível (largura zero) cria tarefa sem texto | Baixa | Baixa | Criação |
+| [BUG-25](#bug-25) | O bucket que hospeda o site permite listar os arquivos publicamente | Baixa | Baixa | Segurança |
 
 ## 4. Detalhamento
 
@@ -160,24 +162,29 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 **Teste:** `tests/test_persistencia.py::test_armazenamento_cheio_nao_trava_o_campo`
 
 <a id="bug-05"></a>
-### BUG-05 · Valor inválido no armazenamento deixa a aplicação em branco
+### BUG-05 · Com o armazenamento bloqueado ou com valor inválido, a aplicação fica em branco
 
-**Severidade:** Alta · **Prioridade:** Baixa · **Reprodutibilidade:** sempre
+**Severidade:** Alta · **Prioridade:** Média (bloquear dados de sites é uma configuração de privacidade comum) · **Reprodutibilidade:** sempre
 
-**Passos**
+**Passos (cenário A: armazenamento bloqueado)**
+
+1. No Google Chrome, abra `chrome://settings/content/siteData` e escolha a opção que não permite aos sites salvar dados no dispositivo. Testei com a preferência equivalente do perfil, `profile.default_content_setting_values.cookies = 2`, no Chrome 156.
+2. Abra a aplicação.
+
+**Passos (cenário B: valor inválido)**
 
 1. No console do DevTools, execute `localStorage.setItem('todos-angularjs', '{corrompido')`. Isso simula um dado gravado com defeito ou por outra versão do app.
 2. Recarregue a página.
 
-**Esperado:** a aplicação abre, descarta ou ignora o dado inválido e, de preferência, avisa o usuário.
+**Esperado:** a aplicação abre e funciona. No cenário A, ela avisa que as tarefas não serão guardadas. No cenário B, descarta o dado inválido e, de preferência, avisa o usuário.
 
-**Obtido:** a página fica em branco, só com o fundo. O console mostra `SyntaxError: Expected property name or '}' in JSON at position 1`. O usuário comum não tem como sair dessa situação sem limpar os dados do site.
+**Obtido:** nos dois cenários, a página fica em branco, só com o fundo. O console mostra `SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.` no cenário A e `SyntaxError: Expected property name or '}' in JSON at position 1` no cenário B. No cenário B, o usuário comum só sai dessa situação limpando os dados do site.
 
 <img src="evidencias/BUG-05.png" width="380" alt="Página em branco">
 
-**Causa provável:** `JSON.parse` sem tratamento de erro em `todoStorage.js:99`. A rota depende desse carregamento (`resolve` em `app.js:15-22`), então a tela nunca é montada.
+**Causa provável:** a leitura do armazenamento em `todoStorage.js:99` (`JSON.parse(localStorage.getItem(...))`) não tem tratamento de erro. A rota depende desse carregamento (`resolve` em `app.js:15-22`), então a tela nunca é montada.
 
-**Teste:** `tests/test_persistencia.py::test_dado_invalido_no_armazenamento_nao_deixa_a_tela_em_branco`
+**Teste:** `tests/test_persistencia.py::test_armazenamento_bloqueado_nao_deixa_a_tela_em_branco` e `::test_dado_invalido_no_armazenamento_nao_deixa_a_tela_em_branco`
 
 <a id="bug-06"></a>
 ### BUG-06 · Campo de nova tarefa fica com 3 espaços depois de adicionar
@@ -253,7 +260,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Esperado:** o layout se ajusta à largura da tela.
 
-**Obtido:** a página é montada com cerca de 980 px de largura (`window.innerWidth` vale 981 numa tela de 375 px) e reduzida para caber. O texto das tarefas fica com cerca de 9 px, o rodapé com cerca de 4 px, e os alvos de toque ficam pequenos.
+**Obtido:** a página é montada com cerca de 980 px de largura (`window.innerWidth` vale 981 no Chromium e 980 no WebKit, numa tela de 375 px) e reduzida para caber. O texto das tarefas fica com cerca de 9 px, o rodapé com cerca de 4 px, e os alvos de toque ficam pequenos.
 
 <img src="evidencias/BUG-09.png" width="260" alt="Página reduzida no celular">
 
@@ -274,7 +281,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Esperado:** dependências com suporte e sem vulnerabilidades conhecidas.
 
-**Observação:** não consegui explorar nenhuma dessas falhas nesta tela. HTML e expressões do Angular digitados como tarefa aparecem como texto (CT-07 passou). O risco está na base desatualizada, que não recebe correções. A recomendação é migrar para um framework com suporte ou contratar suporte estendido.
+**Observação:** não consegui explorar nenhuma dessas falhas nesta tela. HTML e expressões do Angular digitados como tarefa aparecem como texto (CT-08 passou). O risco está na base desatualizada, que não recebe correções. A recomendação é migrar para um framework com suporte ou contratar suporte estendido.
 
 <a id="bug-11"></a>
 ### BUG-11 · Indicador de foco do teclado foi removido
@@ -450,6 +457,41 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Teste:** `tests/test_servidor_e_console.py::test_carregamento_sem_erros_de_rede`
 
+<a id="bug-24"></a>
+### BUG-24 · Caractere invisível (largura zero) cria tarefa sem texto
+
+**Severidade:** Baixa · **Prioridade:** Baixa · **Reprodutibilidade:** sempre
+
+**Passos**
+
+1. No console do DevTools, execute `copy('\u200b')`. Isso copia o caractere U+200B (espaço de largura zero), comum em texto copiado de páginas da web.
+2. Cole no campo de nova tarefa e pressione Enter.
+
+**Esperado:** nenhuma tarefa é criada, como acontece com um campo vazio ou só com espaços.
+
+**Obtido:** é criada uma tarefa sem texto visível, salva como `{"title":"\u200b"}` e contada como pendente. Espaço não separável (U+00A0), tabulação e espaço ideográfico (U+3000) são ignorados corretamente.
+
+<img src="evidencias/BUG-24.png" width="380" alt="Tarefa sem texto visível">
+
+**Causa provável:** `todoCtrl.js:33` só usa `.trim()`, e o U+200B não é considerado espaço em branco pelo Unicode, então sobrevive ao `trim()`.
+
+**Teste:** `tests/test_tarefas.py::test_caractere_invisivel_nao_cria_tarefa`
+
+<a id="bug-25"></a>
+### BUG-25 · O bucket que hospeda o site permite listar os arquivos publicamente
+
+**Severidade:** Baixa · **Prioridade:** Baixa · **Tipo:** configuração de hospedagem
+
+**Evidência:** os cabeçalhos `x-goog-*` mostram que o site é servido por um bucket do Google Cloud Storage. Abrir `https://storage.googleapis.com/todolist.james.am/` sem login devolve um `ListBucketResult` com os 12 arquivos publicados (`index.html`, `js/...` e `node_modules/...`). A API JSON (`storage/v1/b/todolist.james.am/o`) também responde 200.
+
+**Esperado:** o público consegue ler os arquivos do site, mas não listar o conteúdo do bucket.
+
+**Impacto:** hoje a listagem só mostra arquivos que já são públicos. Mas qualquer arquivo enviado por engano, como um backup, um `.env` ou um source map, ficaria fácil de descobrir.
+
+**Sugestão:** dar ao público só a permissão de leitura de objetos (por exemplo, `roles/storage.legacyObjectReader`), sem `storage.objects.list`.
+
+**Teste:** `tests/test_servidor_e_console.py::test_bucket_de_hospedagem_nao_lista_os_arquivos`
+
 ## 5. Observações de código sem efeito visível hoje
 
 Encontrei estes pontos na comparação com a implementação de referência. Não causam falha visível hoje, mas vale corrigir junto com os bugs acima.
@@ -472,5 +514,8 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 - Filtros “All”, “active” e “Completed” mostram as tarefas certas, destacam o filtro e continuam aplicados depois de recarregar.
 - Tarefas e estados continuam lá depois de recarregar a página.
 - Campo de nova tarefa recebe foco ao abrir; lista e rodapé ficam ocultos sem tarefas; HTTP redireciona para HTTPS.
+- Voltar e avançar do navegador acompanham o filtro; editar digitando tecla a tecla mantém os espaços do meio.
+- Em janela de 320 px no desktop, não há rolagem horizontal. Com 1.000 tarefas, a lista carrega em cerca de 0,3 s e concluir, adicionar ou marcar todas leva até 0,2 s (Chromium, máquina local).
+- Não há arquivos sensíveis expostos no domínio (`.git`, `package.json`): todos respondem 404.
 
-**Limitações:** não testei Safari e Chrome em aparelhos reais (usei o motor WebKit e a emulação de celular do Chromium) nem leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.
+**Limitações:** não testei Safari e Chrome em aparelhos reais (usei o motor WebKit e a emulação de celular do Chromium) nem leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado. O duplo toque para editar no celular funcionou na emulação do Chromium; na emulação do WebKit, a ferramenta não consegue tocar no elemento, então falta confirmar num iPhone real.

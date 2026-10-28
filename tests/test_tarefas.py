@@ -4,7 +4,7 @@ import re
 import pytest
 from playwright.sync_api import expect
 
-from bugs import BUG_06
+from bugs import BUG_06, BUG_24
 
 CONCLUIDA = re.compile(r"\bcompleted\b")
 
@@ -39,6 +39,13 @@ def test_tarefa_vazia_nao_e_criada(todo, entrada):
 
     expect(todo.itens).to_have_count(0)
     assert todo.salvos() == []
+
+
+@BUG_24
+def test_caractere_invisivel_nao_cria_tarefa(todo):
+    todo.adicionar("\u200b")  # espaço de largura zero, comum em texto copiado da web
+
+    expect(todo.itens).to_have_count(0)
 
 
 @BUG_06

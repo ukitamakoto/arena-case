@@ -19,7 +19,7 @@ Encontrar o máximo de defeitos na aplicação <https://todolist.james.am/#/> e 
 **Fora do escopo**
 
 - Modo com backend. A aplicação procura `/api`, recebe 404 e usa só o `localStorage`, então esse modo não existe neste ambiente.
-- Carga e desempenho. É uma página estática, sem servidor de aplicação.
+- Carga e desempenho. É uma página estática, sem servidor de aplicação. Fiz só uma checagem de volume com 1.000 tarefas.
 - Aparelhos reais e leitores de tela reais. Usei emulação, o motor WebKit, a árvore de acessibilidade e o axe-core.
 
 ## 3. Oráculos
@@ -47,15 +47,15 @@ Cada teste automatizado começa num contexto de navegador novo, então o `localS
 
 | # | Missão | Foco |
 |---|---|---|
-| 1 | Criação de tarefas | Enter, aparar espaços, vazio e só espaços, texto longo, acentos e emoji, HTML e `{{ }}` |
+| 1 | Criação de tarefas | Enter, aparar espaços, vazio e só espaços, caracteres invisíveis, texto longo, acentos e emoji, HTML e `{{ }}` |
 | 2 | Conclusão, contador e “Mark all” | Transições de estado com 0, 1 e 2 ou mais pendentes; estado visual da caixa “Mark all” |
 | 3 | Edição | Duplo clique, Enter, sair do campo, Esc, texto vazio, espaços, sequências como Esc seguido de Enter em outra tarefa |
 | 4 | Exclusão e limpeza | Botão ×, “Clear” com e sem concluídas |
-| 5 | Filtros e rotas | `#/`, `#/active`, `#/completed`, recarregar, rota inexistente, maiúsculas |
-| 6 | Persistência e robustez | Recarregar, duas abas, armazenamento cheio, valor inválido no `localStorage` |
+| 5 | Filtros e rotas | `#/`, `#/active`, `#/completed`, recarregar, voltar e avançar, rota inexistente, maiúsculas |
+| 6 | Persistência e robustez | Recarregar, duas abas, armazenamento cheio, bloqueado e com valor inválido, 1.000 tarefas |
 | 7 | Textos | Placeholder, rótulos, tooltip, rodapé, código-fonte |
-| 8 | Acessibilidade e celular | Navegação só por teclado, foco visível, árvore de acessibilidade, axe-core, 375 px |
-| 9 | Segurança e console | Injeção, cabeçalhos HTTP, iframe de outra origem, `npm audit`, erros de rede |
+| 8 | Acessibilidade e celular | Navegação só por teclado, foco visível, árvore de acessibilidade, axe-core, 375 px, 320 px, toque e duplo toque |
+| 9 | Segurança e console | Injeção, cabeçalhos HTTP, iframe de outra origem, `npm audit`, erros de rede, arquivos expostos, bucket de hospedagem |
 
 ### 5.2 Técnicas
 

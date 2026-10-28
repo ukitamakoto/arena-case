@@ -133,6 +133,16 @@ def main() -> None:
         page.locator(".new-todo").press("ControlOrMeta+a")
         print_anotado(page, "BUG-06", "Depois de adicionar, o campo ficou com 3 espaços (trecho selecionado) e o placeholder sumiu",
                       ".new-todo")
+        page.context.close()
+
+        page = abrir(browser)
+        adicionar(page, "\u200b")
+        print_anotado(page, "BUG-24", "Só um caractere de largura zero (U+200B) no campo: a tarefa foi criada sem texto",
+                      ".todo-list li")
+        page.context.close()
+
+        page = abrir(browser)
+        adicionar(page, "Comprar pão")
         page.keyboard.press("Tab")  # campo -> "Mark all"
         page.keyboard.press("Tab")  # -> checkbox da tarefa
         print_anotado(page, "BUG-11", "O foco do teclado está no checkbox de “Comprar pão”, mas nada na tela mostra isso")

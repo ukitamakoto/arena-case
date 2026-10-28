@@ -38,6 +38,19 @@ def test_tarefa_concluida_sai_da_visao_de_pendentes(todo):
     expect(todo.titulos).to_have_text(["Pagar contas"])
 
 
+def test_voltar_e_avancar_do_navegador_respeitam_o_filtro(todo):
+    todo.adicionar("Comprar pão", "Pagar contas").alternar("Comprar pão")
+    todo.filtrar("/active").filtrar("/completed")
+
+    todo.page.go_back()
+    expect(todo.titulos).to_have_text(["Pagar contas"])
+    expect(todo.filtro_selecionado).to_have_attribute("href", "#/active")
+
+    todo.page.go_forward()
+    expect(todo.titulos).to_have_text(["Comprar pão"])
+    expect(todo.filtro_selecionado).to_have_attribute("href", "#/completed")
+
+
 @BUG_20
 @pytest.mark.parametrize("rota", ["/xyz", "/Active"])
 def test_rota_inexistente_volta_para_todas(todo, rota):

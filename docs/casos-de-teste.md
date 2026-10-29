@@ -1,10 +1,10 @@
 # Casos de teste: To Do List
 
-Executados em 28/10/2026 em Chrome 156, Firefox 157 e WebKit 27.2. Os casos de toque e layout também foram feitos em 29/10/2026 num iPhone 13 Pro com iOS 26.0 (Safari). Ambiente e critérios estão no [plano de testes](plano-de-testes.md), e os bugs, no [relatório](relatorio-de-bugs.md).
+Executados em 28/10/2026 em Chrome 156, Firefox 157 e WebKit 27.2. Os casos de toque e layout também foram feitos em 29/10/2026 num iPhone 13 Pro com iOS 26.0 (Safari) e no emulador Android 9 com Firefox 159. Ambiente e critérios estão no [plano de testes](plano-de-testes.md), e os bugs, no [relatório](relatorio-de-bugs.md).
 
 A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual” indica um caso verificado só na exploração.
 
-**Resultado:** 61 casos; 32 passaram e 29 falharam. As falhas cobrem os 25 bugs.
+**Resultado:** 64 casos; 33 passaram e 31 falharam. As falhas cobrem os 25 bugs.
 
 ## Criação de tarefas
 
@@ -111,3 +111,11 @@ A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual”
 | CT-59 | Procurar arquivos sensíveis no domínio (`.git/HEAD`, `.git/config`, `package.json`) | 404 | Passou | | Manual |
 | CT-60 | Acessar por `http://` | Redireciona para HTTPS | Passou | | Manual (`curl`: 301) |
 | CT-61 | Rodar a suíte em Chrome, Firefox e WebKit | Mesmos resultados | Passou | | Suíte completa nos 3 navegadores |
+
+## Android (emulador Pixel 3, Android 9, Firefox 159, teclado Gboard)
+
+| ID | Cenário | Esperado | Status | Bug | Automação |
+|---|---|---|---|---|---|
+| CT-62 | Adicionar 4 tarefas em sequência, digitando e apertando Enter | Cada tarefa salva com o texto digitado | **Falhou** | BUG-06 | Manual; a cópia com a linha 44 corrigida passa |
+| CT-63 | Abrir a aplicação | Layout com a largura da tela | **Falhou** | BUG-09 | Manual |
+| CT-64 | Tocar na tarefa | O × aparece | Passou | | Manual |

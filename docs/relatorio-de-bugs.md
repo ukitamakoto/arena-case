@@ -4,18 +4,18 @@
 
 ## 1. Resumo
 
-Encontrei **25 bugs**: 5 de severidade alta, 7 de severidade média e 13 de severidade baixa. Também registrei 3 observações de código que hoje não têm efeito visível. Cada bug tem passos para reproduzir, resultado esperado e obtido, evidência e a causa provável no código.
+Encontrei **25 bugs**: 6 de severidade alta, 6 de severidade média e 13 de severidade baixa. Também registrei 3 observações de código que hoje não têm efeito visível. Cada bug tem passos para reproduzir, resultado esperado e obtido, evidência e a causa provável no código.
 
 O que mais pesa para o usuário:
 
 - **Uma única linha de código causa 4 bugs.** Em `js/controllers/todoCtrl.js:18`, a contagem de pendentes subtrai 1 (`.length -1`). Por isso o contador mostra o número errado e chega a “-1 items left” (BUG-01). O mesmo erro faz o “Mark all as complete” reabrir todas as tarefas quando só falta uma (BUG-02). Também deixa a caixa desmarcada quando tudo está concluído (BUG-07) e mostra o botão “Clear” sem nada concluído (BUG-13). Corrigir essa linha resolve os quatro.
 - **Perda de dados.** Com duas abas abertas, uma apaga as tarefas criadas na outra (BUG-03). Com o armazenamento cheio, a tarefa aparece na tela, mas não é salva, e o campo trava (BUG-04). Se o navegador bloqueia o armazenamento por configuração de privacidade, ou se há um valor inválido salvo, a tela fica em branco (BUG-05).
-- **Uso diário.** Depois de cada tarefa adicionada, o campo fica com 3 espaços em vez de vazio (BUG-06). No celular, a página não se ajusta à tela e aparece reduzida (BUG-09). Pelo teclado, não é possível excluir nem editar tarefas (BUG-08).
+- **Uso diário.** Depois de cada tarefa adicionada, o campo fica com 3 espaços em vez de vazio; no Firefox para Android, isso faz a próxima tarefa ser salva com a última palavra da anterior (BUG-06). No celular, a página não se ajusta à tela e aparece reduzida (BUG-09). Pelo teclado, não é possível excluir nem editar tarefas (BUG-08).
 
 | Severidade | Quantidade | Bugs |
 |---|---|---|
-| Alta | 5 | BUG-01 a BUG-05 |
-| Média | 7 | BUG-06 a BUG-12 |
+| Alta | 6 | BUG-01 a BUG-06 |
+| Média | 6 | BUG-07 a BUG-12 |
 | Baixa | 13 | BUG-13 a BUG-25 |
 
 ## 2. Como testei
@@ -26,11 +26,11 @@ O que mais pesa para o usuário:
 - **Revisão do código publicado.** Comparei os arquivos servidos com a implementação de referência do TodoMVC para AngularJS ([tastejs/todomvc, commit 2cda67b](https://github.com/tastejs/todomvc/tree/2cda67b20c555f76a67dc596f06d1721f2dd4816/examples/angularjs)). A diferença aponta a linha provável de cada bug e ajuda quem for corrigir.
 - **Ferramentas.** DevTools; axe-core 4.10.2 para acessibilidade; `npm audit` para as dependências; Playwright para reproduzir os bugs nos três motores de navegador e para a [suíte automatizada](../README.md#automação). A suíte cobre 23 dos 25 bugs.
 
-**Ambiente:** macOS 26.2; Google Chrome 156.0.8078.48; Chromium 156.0.8078.4, Firefox 157.0 e WebKit 27.2 (motor do Safari) pelo Playwright 1.64.1; celular emulado com 375×667 px no Chromium; iPhone 13 Pro com iOS 26.0, no Safari em aba privada, com gravação de tela (as evidências do iPhone são quadros dessas gravações). A aplicação procura um backend em `/api`, recebe 404 e passa a salvar no `localStorage` do navegador. Os arquivos publicados são de 22/12/2019 (cabeçalho `Last-Modified`) e usam AngularJS 1.4.3.
+**Ambiente:** macOS 26.2; Google Chrome 156.0.8078.48; Chromium 156.0.8078.4, Firefox 157.0 e WebKit 27.2 (motor do Safari) pelo Playwright 1.64.1; celular emulado com 375×667 px no Chromium; emulador Android 9 (Pixel 3) com o Firefox 159 oficial da Mozilla e o teclado Gboard; iPhone 13 Pro com iOS 26.0, no Safari em aba privada, com gravação de tela (as evidências do iPhone são quadros dessas gravações). A aplicação procura um backend em `/api`, recebe 404 e passa a salvar no `localStorage` do navegador. Os arquivos publicados são de 22/12/2019 (cabeçalho `Last-Modified`) e usam AngularJS 1.4.3.
 
 **Severidade** é o impacto no usuário: alta = resultado errado em função principal ou perda de dados; média = comportamento errado com contorno ou que exclui um grupo de usuários; baixa = texto, visual ou configuração sem impacto funcional. **Prioridade** é a urgência sugerida para corrigir, considerando a frequência e a exposição.
 
-Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. No iPhone, também observei BUG-01, BUG-02, BUG-05, BUG-06, BUG-07, BUG-09 e BUG-13. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
+Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. No iPhone, também observei BUG-01, BUG-02, BUG-05, BUG-06, BUG-07, BUG-09 e BUG-13. No emulador Android, com o Firefox, observei BUG-01, BUG-06 e BUG-09. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
 
 ## 3. Lista de bugs
 
@@ -41,7 +41,7 @@ Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado.
 | [BUG-03](#bug-03) | Com duas abas abertas, uma apaga as tarefas criadas na outra | Alta | Média | Persistência |
 | [BUG-04](#bug-04) | Com o armazenamento cheio, a tarefa não é salva e o campo trava | Alta | Baixa | Persistência |
 | [BUG-05](#bug-05) | Com o armazenamento bloqueado ou com valor inválido, a aplicação fica em branco | Alta | Média | Persistência |
-| [BUG-06](#bug-06) | Campo de nova tarefa fica com 3 espaços depois de adicionar | Média | Alta | Criação |
+| [BUG-06](#bug-06) | Campo de nova tarefa fica com 3 espaços depois de adicionar | Alta | Alta | Criação |
 | [BUG-07](#bug-07) | Com todas concluídas, “Mark all” aparece desmarcado e exige 2 cliques | Média | Média | Marcar todas |
 | [BUG-08](#bug-08) | Excluir e editar tarefas não funcionam pelo teclado | Média | Média | Acessibilidade |
 | [BUG-09](#bug-09) | No celular, a página não se ajusta à tela e aparece reduzida | Média | Média | Responsividade |
@@ -199,7 +199,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 <a id="bug-06"></a>
 ### BUG-06 · Campo de nova tarefa fica com 3 espaços depois de adicionar
 
-**Severidade:** Média · **Prioridade:** Alta (acontece em toda tarefa adicionada) · **Reprodutibilidade:** sempre
+**Severidade:** Alta (no Firefox para Android, títulos são salvos errados; no desktop e no iPhone, o efeito é visual) · **Prioridade:** Alta (acontece em toda tarefa adicionada) · **Reprodutibilidade:** sempre
 
 **Passos**
 
@@ -209,11 +209,17 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Esperado:** o campo fica vazio e o placeholder volta a aparecer. A especificação diz que o campo deve ser limpo.
 
-**Obtido:** o campo fica com 3 espaços (`"   "`). O placeholder não volta, e o próximo texto começa 3 espaços deslocado (`"   Pagar contas"`). O título salvo sai sem os espaços, porque a aplicação apara o texto, então o problema é de interface.
+**Obtido:** o campo fica com 3 espaços (`"   "`). O placeholder não volta, e o próximo texto começa 3 espaços deslocado (`"   Pagar contas"`). No desktop e no iPhone, o título salvo sai sem os espaços, porque a aplicação apara o texto, e o problema fica na interface. No Firefox para Android, o título salvo sai errado (veja abaixo).
 
 <img src="evidencias/BUG-06.png" width="380" alt="Campo com 3 espaços selecionados"> <img src="evidencias/BUG-06-iphone.png" width="180" alt="iPhone: lista vazia e campo sem placeholder">
 
 No iPhone 13 Pro (quadro à direita), depois de limpar todas as tarefas, o campo continua sem placeholder.
+
+**No Firefox 159 para Android (emulador Android 9, teclado Gboard):** o problema deixa de ser só visual. Depois do Enter, o teclado devolve ao campo a última palavra digitada, e a próxima tarefa é salva com ela na frente. “Comprar pao” seguida de “Pagar contas” vira “paoPagar contas”, e “Lavar o carro” seguida de “Ligar mae” vira “carroLigar maeg”. Os títulos errados continuam lá depois de recarregar. Para isolar a causa, repeti a mesma digitação numa cópia local da aplicação com a linha 44 corrigida (`''`), no mesmo emulador: os títulos saíram certos e o placeholder voltou. O “of” e o “g” extras são autocorreção do teclado do emulador.
+
+<img src="evidencias/BUG-06-android.png" width="540" alt="Android: títulos corrompidos na aplicação publicada e corretos na cópia corrigida">
+
+À esquerda, a aplicação publicada; à direita, a cópia com a linha 44 corrigida.
 
 **Causa provável:** `todoCtrl.js:44` faz `$scope.newTodo = '   ';`. A referência usa `''`.
 
@@ -539,4 +545,4 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 - Em janela de 320 px no desktop, não há rolagem horizontal. Com 1.000 tarefas, a lista carrega em cerca de 0,3 s e concluir, adicionar ou marcar todas leva até 0,2 s (Chromium, máquina local).
 - Não há arquivos sensíveis expostos no domínio (`.git`, `package.json`): todos respondem 404.
 
-**Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros, contador, “Mark all” e cookies bloqueados. Não testei Android real e não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.
+**Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros, contador, “Mark all” e cookies bloqueados. No Android, usei só o emulador: Android 9 com Firefox 159, porque a imagem não tem o Chrome, e o `adb` não consegue simular um duplo toque rápido o bastante para abrir a edição. Não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.

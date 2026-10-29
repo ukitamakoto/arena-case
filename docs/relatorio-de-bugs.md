@@ -30,7 +30,7 @@ O que mais pesa para o usuário:
 
 **Severidade** é o impacto no usuário: alta = resultado errado em função principal ou perda de dados; média = comportamento errado com contorno ou que exclui um grupo de usuários; baixa = texto, visual ou configuração sem impacto funcional. **Prioridade** é a urgência sugerida para corrigir, considerando a frequência e a exposição.
 
-Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. No iPhone, também observei BUG-01, BUG-05, BUG-06, BUG-09 e BUG-13. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
+Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. No iPhone, também observei BUG-01, BUG-02, BUG-05, BUG-06, BUG-07, BUG-09 e BUG-13. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
 
 ## 3. Lista de bugs
 
@@ -106,6 +106,10 @@ Pré-condição de todos os bugs, salvo indicação: aplicação aberta em `http
 <img src="evidencias/BUG-02-antes.png" width="380" alt="Antes: 1 pendente e a seta já marcada"> <img src="evidencias/BUG-02-depois.png" width="380" alt="Depois: todas pendentes">
 
 Animação do passo a passo: [evidencias/BUG-02.gif](evidencias/BUG-02.gif)
+
+**No iPhone 13 Pro (iOS 26.0, Safari), com uma única tarefa:** a seta aparece marcada com a tarefa pendente (1º quadro). O 1º toque na seta não conclui nada, só desmarca a seta (2º). Só o 2º toque conclui a tarefa, e o contador vai para “-1 items left” com a seta ainda desmarcada (3º). Para reabrir é igual: o 3º toque só marca a seta (4º) e o 4º reabre a tarefa (5º). Com uma tarefa só, o efeito do bug é exigir 2 toques; com mais tarefas, é reabrir as que já estavam concluídas.
+
+<img src="evidencias/BUG-02-iphone-uma-tarefa.png" width="300" alt="iPhone: quatro toques na seta com uma tarefa">
 
 **Causa provável:** com 1 pendente, o contador errado do BUG-01 vale 0. Então `allChecked = !remainingCount` (`todoCtrl.js:20`) fica `true` e a caixa aparece marcada. O clique inverte para `false` e chama `markAll(false)`, que reabre tudo.
 
@@ -231,6 +235,8 @@ No iPhone 13 Pro (quadro à direita), depois de limpar todas as tarefas, o campo
 **Obtido:** a seta continua desmarcada (cinza-claro) com tudo concluído. O primeiro clique não muda nenhuma tarefa, e só o segundo reabre todas.
 
 <img src="evidencias/BUG-07.png" width="380" alt="Todas concluídas e a seta desmarcada">
+
+No iPhone 13 Pro acontece o mesmo, inclusive com uma tarefa só: veja os quadros 3 a 5 da evidência do iPhone no BUG-02.
 
 **Causa provável:** a mesma do BUG-01. Com zero pendentes, o contador vale -1, e `allChecked = !(-1)` resulta em `false`.
 
@@ -533,4 +539,4 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 - Em janela de 320 px no desktop, não há rolagem horizontal. Com 1.000 tarefas, a lista carrega em cerca de 0,3 s e concluir, adicionar ou marcar todas leva até 0,2 s (Chromium, máquina local).
 - Não há arquivos sensíveis expostos no domínio (`.git`, `package.json`): todos respondem 404.
 
-**Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros, contador e cookies bloqueados. Não testei Android real e não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.
+**Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros, contador, “Mark all” e cookies bloqueados. Não testei Android real e não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.

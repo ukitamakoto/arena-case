@@ -58,10 +58,10 @@ A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual”
 | ID | Cenário | Esperado | Status | Bug | Automação |
 |---|---|---|---|---|---|
 | CT-28 | Clicar com todas as tarefas pendentes | Todas concluídas | Passou | | `test_marcar_todas_conclui_todas_as_pendentes` |
-| CT-29 | Clicar com só 1 pendente | Todas concluídas | **Falhou** | BUG-02 | `test_marcar_todas_com_uma_pendente_conclui_todas` |
+| CT-29 | Clicar com só 1 pendente | Todas concluídas | **Falhou** | BUG-02 | `test_marcar_todas_com_uma_pendente_conclui_todas`; no iPhone 13 Pro, com 1 tarefa, o 1º toque não conclui |
 | CT-30 | Observar a caixa com 1 pendente | Caixa desmarcada | **Falhou** | BUG-02 | `test_caixa_fica_desmarcada_enquanto_houver_pendente` |
 | CT-31 | Observar a caixa com todas concluídas | Caixa marcada | **Falhou** | BUG-07 | `test_caixa_fica_marcada_quando_todas_estao_concluidas` |
-| CT-32 | Clicar uma vez com todas concluídas | Todas reabertas | **Falhou** | BUG-07 | `test_um_clique_reabre_todas_quando_todas_estao_concluidas` |
+| CT-32 | Clicar uma vez com todas concluídas | Todas reabertas | **Falhou** | BUG-07 | `test_um_clique_reabre_todas_quando_todas_estao_concluidas`; confirmado no iPhone 13 Pro |
 
 ## Filtros e rotas
 

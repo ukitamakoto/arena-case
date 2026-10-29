@@ -2,7 +2,7 @@
 
 Testes da aplicação **To Do List** (<https://todolist.james.am/#/>): bugs encontrados, documentação de QA e uma suíte automatizada que reproduz cada bug.
 
-**25 bugs encontrados**: 6 de severidade alta, 6 de média e 13 de baixa. A suíte automatizada cobre 23 deles e roda em Chrome, Firefox e WebKit.
+**25 bugs encontrados**: 5 de severidade alta, 7 de média e 13 de baixa. A suíte automatizada cobre 23 deles e roda em Chrome, Firefox e WebKit.
 
 | Documento | Conteúdo |
 |---|---|
@@ -15,7 +15,7 @@ Testes da aplicação **To Do List** (<https://todolist.james.am/#/>): bugs enco
 
 - **Uma linha causa quatro bugs.** `todoCtrl.js:18` subtrai 1 da contagem de pendentes. O contador chega a “-1 items left” (BUG-01). Com 1 pendente, “Mark all as complete” reabre todas as tarefas (BUG-02). Com tudo concluído, a caixa aparece desmarcada (BUG-07). E o botão “Clear” aparece sem nada concluído (BUG-13).
 - **Perda de dados.** Duas abas abertas apagam as tarefas uma da outra (BUG-03). Com o armazenamento cheio, a tarefa não é salva e o campo trava (BUG-04). Com o armazenamento bloqueado pela configuração de privacidade do navegador, ou com um valor inválido salvo, a tela fica em branco (BUG-05).
-- **Uso diário.** O campo fica com 3 espaços depois de cada tarefa adicionada; no Firefox para Android, isso faz a próxima tarefa ser salva com a última palavra da anterior (BUG-06). Não há `meta viewport`, então no celular a página aparece reduzida (BUG-09). Excluir e editar não funcionam pelo teclado (BUG-08).
+- **Uso diário.** O campo fica com 3 espaços depois de cada tarefa adicionada (BUG-06). Não há `meta viewport`, então no celular a página aparece reduzida (BUG-09). Excluir e editar não funcionam pelo teclado (BUG-08).
 
 ![BUG-02: com uma tarefa pendente, “Mark all as complete” reabre todas](docs/evidencias/BUG-02.gif)
 

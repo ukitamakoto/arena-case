@@ -4,18 +4,18 @@
 
 ## 1. Resumo
 
-Encontrei **25 bugs**: 6 de severidade alta, 6 de severidade média e 13 de severidade baixa. Também registrei 3 observações de código que hoje não têm efeito visível. Cada bug tem passos para reproduzir, resultado esperado e obtido, evidência e a causa provável no código.
+Encontrei **25 bugs**: 5 de severidade alta, 7 de severidade média e 13 de severidade baixa. Também registrei 3 observações de código que hoje não têm efeito visível. Cada bug tem passos para reproduzir, resultado esperado e obtido, evidência e a causa provável no código.
 
 O que mais pesa para o usuário:
 
 - **Uma única linha de código causa 4 bugs.** Em `js/controllers/todoCtrl.js:18`, a contagem de pendentes subtrai 1 (`.length -1`). Por isso o contador mostra o número errado e chega a “-1 items left” (BUG-01). O mesmo erro faz o “Mark all as complete” reabrir todas as tarefas quando só falta uma (BUG-02). Também deixa a caixa desmarcada quando tudo está concluído (BUG-07) e mostra o botão “Clear” sem nada concluído (BUG-13). Corrigir essa linha resolve os quatro.
 - **Perda de dados.** Com duas abas abertas, uma apaga as tarefas criadas na outra (BUG-03). Com o armazenamento cheio, a tarefa aparece na tela, mas não é salva, e o campo trava (BUG-04). Se o navegador bloqueia o armazenamento por configuração de privacidade, ou se há um valor inválido salvo, a tela fica em branco (BUG-05).
-- **Uso diário.** Depois de cada tarefa adicionada, o campo fica com 3 espaços em vez de vazio; no Firefox para Android, isso faz a próxima tarefa ser salva com a última palavra da anterior (BUG-06). No celular, a página não se ajusta à tela e aparece reduzida (BUG-09). Pelo teclado, não é possível excluir nem editar tarefas (BUG-08).
+- **Uso diário.** Depois de cada tarefa adicionada, o campo fica com 3 espaços em vez de vazio (BUG-06). No celular, a página não se ajusta à tela e aparece reduzida (BUG-09). Pelo teclado, não é possível excluir nem editar tarefas (BUG-08).
 
 | Severidade | Quantidade | Bugs |
 |---|---|---|
-| Alta | 6 | BUG-01 a BUG-06 |
-| Média | 6 | BUG-07 a BUG-12 |
+| Alta | 5 | BUG-01 a BUG-05 |
+| Média | 7 | BUG-06 a BUG-12 |
 | Baixa | 13 | BUG-13 a BUG-25 |
 
 ## 2. Como testei
@@ -41,7 +41,7 @@ Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado.
 | [BUG-03](#bug-03) | Com duas abas abertas, uma apaga as tarefas criadas na outra | Alta | Média | Persistência |
 | [BUG-04](#bug-04) | Com o armazenamento cheio, a tarefa não é salva e o campo trava | Alta | Baixa | Persistência |
 | [BUG-05](#bug-05) | Com o armazenamento bloqueado ou com valor inválido, a aplicação fica em branco | Alta | Média | Persistência |
-| [BUG-06](#bug-06) | Campo de nova tarefa fica com 3 espaços depois de adicionar | Alta | Alta | Criação |
+| [BUG-06](#bug-06) | Campo de nova tarefa fica com 3 espaços depois de adicionar | Média | Alta | Criação |
 | [BUG-07](#bug-07) | Com todas concluídas, “Mark all” aparece desmarcado e exige 2 cliques | Média | Média | Marcar todas |
 | [BUG-08](#bug-08) | Excluir e editar tarefas não funcionam pelo teclado | Média | Média | Acessibilidade |
 | [BUG-09](#bug-09) | No celular, a página não se ajusta à tela e aparece reduzida | Média | Média | Responsividade |
@@ -199,7 +199,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 <a id="bug-06"></a>
 ### BUG-06 · Campo de nova tarefa fica com 3 espaços depois de adicionar
 
-**Severidade:** Alta (no Firefox para Android, títulos são salvos errados; no desktop e no iPhone, o efeito é visual) · **Prioridade:** Alta (acontece em toda tarefa adicionada) · **Reprodutibilidade:** sempre
+**Severidade:** Média · **Prioridade:** Alta (acontece em toda tarefa adicionada) · **Reprodutibilidade:** sempre
 
 **Passos**
 
@@ -209,17 +209,13 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Esperado:** o campo fica vazio e o placeholder volta a aparecer. A especificação diz que o campo deve ser limpo.
 
-**Obtido:** o campo fica com 3 espaços (`"   "`). O placeholder não volta, e o próximo texto começa 3 espaços deslocado (`"   Pagar contas"`). No desktop e no iPhone, o título salvo sai sem os espaços, porque a aplicação apara o texto, e o problema fica na interface. No Firefox para Android, o título salvo sai errado (veja abaixo).
+**Obtido:** o campo fica com 3 espaços (`"   "`). O placeholder não volta, e o próximo texto começa 3 espaços deslocado (`"   Pagar contas"`). O título salvo sai sem os espaços, porque a aplicação apara o texto, então o problema é de interface.
 
 <img src="evidencias/BUG-06.png" width="380" alt="Campo com 3 espaços selecionados"> <img src="evidencias/BUG-06-iphone.png" width="180" alt="iPhone: lista vazia e campo sem placeholder">
 
 No iPhone 13 Pro (quadro à direita), depois de limpar todas as tarefas, o campo continua sem placeholder.
 
-**No Firefox 159 para Android (emulador Android 9, teclado Gboard):** o problema deixa de ser só visual. Depois do Enter, o teclado devolve ao campo a última palavra digitada, e a próxima tarefa é salva com ela na frente. “Comprar pao” seguida de “Pagar contas” vira “paoPagar contas”, e “Lavar o carro” seguida de “Ligar mae” vira “carroLigar maeg”. Os títulos errados continuam lá depois de recarregar. Para isolar a causa, repeti a mesma digitação numa cópia local da aplicação com a linha 44 corrigida (`''`), no mesmo emulador: os títulos saíram certos e o placeholder voltou. O “of” e o “g” extras são autocorreção do teclado do emulador.
-
-<img src="evidencias/BUG-06-android.png" width="540" alt="Android: títulos corrompidos na aplicação publicada e corretos na cópia corrigida">
-
-À esquerda, a aplicação publicada; à direita, a cópia com a linha 44 corrigida.
+No Firefox 159 para Android (emulador Android 9), a árvore de acessibilidade mostra o campo de nova tarefa com o valor `"   "` depois de adicionar, e o placeholder também não volta.
 
 **Causa provável:** `todoCtrl.js:44` faz `$scope.newTodo = '   ';`. A referência usa `''`.
 
@@ -287,6 +283,10 @@ No iPhone 13 Pro acontece o mesmo, inclusive com uma tarefa só: veja os quadros
 <img src="evidencias/BUG-09.png" width="200" alt="Emulação: página reduzida"> <img src="evidencias/BUG-09-iphone-reduzida.png" width="200" alt="iPhone: página reduzida ao abrir"> <img src="evidencias/BUG-09-iphone-zoom.png" width="200" alt="iPhone: zoom automático ao tocar no campo">
 
 Da esquerda para a direita: emulação no Chromium, iPhone ao abrir e iPhone depois de tocar no campo.
+
+<img src="evidencias/BUG-09-android.png" width="200" alt="Android: página reduzida no Firefox">
+
+No Firefox 159 para Android (emulador Android 9, Pixel 3), a página também abre reduzida.
 
 **Causa provável:** falta `<meta name="viewport" content="width=device-width, initial-scale=1">` no `<head>` do `index.html`.
 
@@ -546,3 +546,5 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 - Não há arquivos sensíveis expostos no domínio (`.git`, `package.json`): todos respondem 404.
 
 **Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros, contador, “Mark all” e cookies bloqueados. No Android, usei só o emulador: Android 9 com Firefox 159, porque a imagem não tem o Chrome, e o `adb` não consegue simular um duplo toque rápido o bastante para abrir a edição. Não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.
+
+**Observação não reproduzida:** na primeira sessão no emulador Android, duas tarefas foram salvas com a última palavra da tarefa anterior na frente (“paoPagar contas”, “carroLigar maeg”). Em 4 sessões seguintes, incluindo uma com o Firefox e o teclado zerados, isso não se repetiu em nenhuma de 10 tentativas. A digitação no emulador foi injetada pelo `adb`, e o teclado Gboard reescreveu palavras de forma imprevisível nessas sessões (“Lavar o carro” virou “Pagar I carro”, “Ligar” virou “Lugar”). Como não consegui separar o efeito do teclado do comportamento da aplicação, não registrei como bug.

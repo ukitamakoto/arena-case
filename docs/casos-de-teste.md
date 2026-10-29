@@ -116,6 +116,6 @@ A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual”
 
 | ID | Cenário | Esperado | Status | Bug | Automação |
 |---|---|---|---|---|---|
-| CT-62 | Adicionar 4 tarefas em sequência, digitando e apertando Enter | Cada tarefa salva com o texto digitado | **Falhou** | BUG-06 | Manual; a cópia com a linha 44 corrigida passa |
+| CT-62 | Adicionar uma tarefa e ler o campo na árvore de acessibilidade | Campo vazio, com o placeholder | **Falhou** | BUG-06 | Manual: o campo aparece com o valor `"   "` |
 | CT-63 | Abrir a aplicação | Layout com a largura da tela | **Falhou** | BUG-09 | Manual |
 | CT-64 | Tocar na tarefa | O × aparece | Passou | | Manual |

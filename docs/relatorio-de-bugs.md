@@ -30,7 +30,7 @@ O que mais pesa para o usuário:
 
 **Severidade** é o impacto no usuário: alta = resultado errado em função principal ou perda de dados; média = comportamento errado com contorno ou que exclui um grupo de usuários; baixa = texto, visual ou configuração sem impacto funcional. **Prioridade** é a urgência sugerida para corrigir, considerando a frequência e a exposição.
 
-Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. No iPhone, também observei BUG-01, BUG-06, BUG-09 e BUG-13. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
+Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. No iPhone, também observei BUG-01, BUG-05, BUG-06, BUG-09 e BUG-13. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
 
 ## 3. Lista de bugs
 
@@ -164,12 +164,14 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 <a id="bug-05"></a>
 ### BUG-05 · Com o armazenamento bloqueado ou com valor inválido, a aplicação fica em branco
 
-**Severidade:** Alta · **Prioridade:** Média (bloquear dados de sites é uma configuração de privacidade comum) · **Reprodutibilidade:** sempre
+**Severidade:** Alta · **Prioridade:** Média (bloquear dados de sites é uma configuração de privacidade comum) · **Reprodutibilidade:** sempre · **Navegadores:** Chrome 156 (desktop) e Safari no iPhone 13 Pro (iOS 26.0)
 
 **Passos (cenário A: armazenamento bloqueado)**
 
-1. No Google Chrome, abra `chrome://settings/content/siteData` e escolha a opção que não permite aos sites salvar dados no dispositivo. Testei com a preferência equivalente do perfil, `profile.default_content_setting_values.cookies = 2`, no Chrome 156.
-2. Abra a aplicação.
+1. Bloqueie o salvamento de dados do site:
+   - **Chrome (desktop):** abra `chrome://settings/content/siteData` e escolha a opção que não permite aos sites salvar dados no dispositivo. Testei com a preferência equivalente do perfil, `profile.default_content_setting_values.cookies = 2`, no Chrome 156.
+   - **iPhone:** ative Ajustes > Apps > Safari > Avançado > “Bloquear Todos os Cookies”.
+2. Abra a aplicação. No iPhone, abra numa aba privada nova.
 
 **Passos (cenário B: valor inválido)**
 
@@ -181,6 +183,10 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 **Obtido:** nos dois cenários, a página fica em branco, só com o fundo. O console mostra `SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.` no cenário A e `SyntaxError: Expected property name or '}' in JSON at position 1` no cenário B. No cenário B, o usuário comum só sai dessa situação limpando os dados do site.
 
 <img src="evidencias/BUG-05.png" width="380" alt="Página em branco">
+
+**No iPhone 13 Pro (iOS 26.0, Safari):** com “Bloquear Todos os Cookies” ativo e o JavaScript ligado, a página fica em branco. O próprio Safari mostra o aviso “Se esta página não estiver aparecendo conforme o esperado, você pode tentar reduzir as proteções avançadas de privacidade”. Recarregar e abrir numa aba nova dão o mesmo resultado. Sem acesso ao console do iPhone, a causa é inferida do teste no Chrome, que mostra o `SecurityError`.
+
+<img src="evidencias/BUG-05-iphone-ajuste.png" width="180" alt="iPhone: Bloquear Todos os Cookies ativo"> <img src="evidencias/BUG-05-iphone-branco.png" width="180" alt="iPhone: página em branco com aviso do Safari"> <img src="evidencias/BUG-05-iphone-nova-aba.png" width="180" alt="iPhone: página em branco numa aba nova">
 
 **Causa provável:** a leitura do armazenamento em `todoStorage.js:99` (`JSON.parse(localStorage.getItem(...))`) não tem tratamento de erro. A rota depende desse carregamento (`resolve` em `app.js:15-22`), então a tela nunca é montada.
 
@@ -527,4 +533,4 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 - Em janela de 320 px no desktop, não há rolagem horizontal. Com 1.000 tarefas, a lista carrega em cerca de 0,3 s e concluir, adicionar ou marcar todas leva até 0,2 s (Chromium, máquina local).
 - Não há arquivos sensíveis expostos no domínio (`.git`, `package.json`): todos respondem 404.
 
-**Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros e contador. Não testei Android real, não repeti no iPhone o cenário de cookies bloqueados do BUG-05 e não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.
+**Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros, contador e cookies bloqueados. Não testei Android real e não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.

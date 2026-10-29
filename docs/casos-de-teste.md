@@ -81,7 +81,7 @@ A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual”
 | CT-39 | Recarregar a página | Tarefas e estados mantidos | Passou | | `test_tarefas_e_estado_sobrevivem_ao_recarregar` |
 | CT-40 | Criar uma tarefa em cada aba e recarregar a primeira | As duas tarefas aparecem | **Falhou** | BUG-03 | `test_duas_abas_nao_apagam_as_tarefas_uma_da_outra` |
 | CT-41 | Adicionar tarefa com o `localStorage` cheio | Aviso de erro; campo continua utilizável | **Falhou** | BUG-04 | `test_armazenamento_cheio_nao_trava_o_campo` (Chromium) |
-| CT-42 | Abrir com o armazenamento bloqueado (Chrome sem permissão para salvar dados de sites) | Aplicação abre e avisa que não vai salvar | **Falhou** | BUG-05 | `test_armazenamento_bloqueado_nao_deixa_a_tela_em_branco` |
+| CT-42 | Abrir com o armazenamento bloqueado (Chrome sem permissão para salvar dados de sites; Safari com “Bloquear Todos os Cookies”) | Aplicação abre e avisa que não vai salvar | **Falhou** | BUG-05 | `test_armazenamento_bloqueado_nao_deixa_a_tela_em_branco`; confirmado no Chrome 156 e no iPhone 13 Pro |
 | CT-43 | Abrir com um valor inválido em `todos-angularjs` | Aplicação abre normalmente | **Falhou** | BUG-05 | `test_dado_invalido_no_armazenamento_nao_deixa_a_tela_em_branco` |
 | CT-44 | Carregar 1.000 tarefas e concluir, adicionar e marcar todas | Cada ação responde em menos de 1 s | Passou | | Manual (até 0,3 s no Chromium) |
 

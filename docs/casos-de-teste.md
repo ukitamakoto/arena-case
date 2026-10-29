@@ -1,6 +1,6 @@
 # Casos de teste: To Do List
 
-Executados em 28/10/2026 em Chrome 156, Firefox 157 e WebKit 27.2. Ambiente e critérios estão no [plano de testes](plano-de-testes.md), e os bugs, no [relatório](relatorio-de-bugs.md).
+Executados em 28/10/2026 em Chrome 156, Firefox 157 e WebKit 27.2. Os casos de toque e layout também foram feitos em 29/10/2026 num iPhone 13 Pro com iOS 26.0 (Safari). Ambiente e critérios estão no [plano de testes](plano-de-testes.md), e os bugs, no [relatório](relatorio-de-bugs.md).
 
 A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual” indica um caso verificado só na exploração.
 
@@ -94,10 +94,10 @@ A coluna **Automação** traz o teste em `tests/` que cobre o caso. “Manual”
 | CT-47 | Focar o checkbox da tarefa com Tab | Indicador de foco visível | **Falhou** | BUG-11 | `test_checkbox_focado_pelo_teclado_tem_indicador_visivel` |
 | CT-48 | Ler a árvore de acessibilidade | Checkbox com o nome da tarefa | **Falhou** | BUG-12 | `test_checkbox_da_tarefa_tem_nome_acessivel` |
 | CT-49 | Rodar o axe-core (WCAG 2.1 AA) | Sem violação de contraste | **Falhou** | BUG-21 | Manual |
-| CT-50 | Abrir em tela de 375 px (celular) | Layout com 375 px de largura | **Falhou** | BUG-09 | `test_pagina_usa_a_largura_da_tela_do_celular` (Chromium e WebKit) |
+| CT-50 | Abrir em tela de 375 px (celular) | Layout com 375 px de largura | **Falhou** | BUG-09 | `test_pagina_usa_a_largura_da_tela_do_celular` (Chromium e WebKit); confirmado no iPhone 13 Pro |
 | CT-51 | Abrir em janela de 320 px no desktop (reflow, WCAG 1.4.10) | Sem rolagem horizontal | Passou | | Manual |
-| CT-52 | Tocar na tarefa no celular | O botão excluir aparece | Passou | | Manual, emulado |
-| CT-53 | Duplo toque no título no celular | Abre a edição | Passou | | Manual, Chromium emulado |
+| CT-52 | Tocar na tarefa no celular e depois no × | O × aparece e remove a tarefa | Passou | | Manual: Chromium emulado e iPhone 13 Pro |
+| CT-53 | Duplo toque no título no celular | Abre a edição | Passou | | Manual: Chromium emulado e iPhone 13 Pro |
 
 ## Segurança e itens não funcionais
 

@@ -26,11 +26,11 @@ O que mais pesa para o usuário:
 - **Revisão do código publicado.** Comparei os arquivos servidos com a implementação de referência do TodoMVC para AngularJS ([tastejs/todomvc, commit 2cda67b](https://github.com/tastejs/todomvc/tree/2cda67b20c555f76a67dc596f06d1721f2dd4816/examples/angularjs)). A diferença aponta a linha provável de cada bug e ajuda quem for corrigir.
 - **Ferramentas.** DevTools; axe-core 4.10.2 para acessibilidade; `npm audit` para as dependências; Playwright para reproduzir os bugs nos três motores de navegador e para a [suíte automatizada](../README.md#automação). A suíte cobre 23 dos 25 bugs.
 
-**Ambiente:** macOS 26.2; Google Chrome 156.0.8078.48; Chromium 156.0.8078.4, Firefox 157.0 e WebKit 27.2 (motor do Safari) pelo Playwright 1.64.1; celular emulado com 375×667 px no Chromium. A aplicação procura um backend em `/api`, recebe 404 e passa a salvar no `localStorage` do navegador. Os arquivos publicados são de 22/12/2019 (cabeçalho `Last-Modified`) e usam AngularJS 1.4.3.
+**Ambiente:** macOS 26.2; Google Chrome 156.0.8078.48; Chromium 156.0.8078.4, Firefox 157.0 e WebKit 27.2 (motor do Safari) pelo Playwright 1.64.1; celular emulado com 375×667 px no Chromium; iPhone 13 Pro com iOS 26.0, no Safari em aba privada, com gravação de tela (as evidências do iPhone são quadros dessas gravações). A aplicação procura um backend em `/api`, recebe 404 e passa a salvar no `localStorage` do navegador. Os arquivos publicados são de 22/12/2019 (cabeçalho `Last-Modified`) e usam AngularJS 1.4.3.
 
 **Severidade** é o impacto no usuário: alta = resultado errado em função principal ou perda de dados; média = comportamento errado com contorno ou que exclui um grupo de usuários; baixa = texto, visual ou configuração sem impacto funcional. **Prioridade** é a urgência sugerida para corrigir, considerando a frequência e a exposição.
 
-Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
+Todos os bugs se reproduziram em Chrome, Firefox e WebKit, exceto onde indicado. No iPhone, também observei BUG-01, BUG-06, BUG-09 e BUG-13. Nos prints, a faixa escura com a legenda e o contorno vermelho são anotações adicionadas na captura.
 
 ## 3. Lista de bugs
 
@@ -80,7 +80,7 @@ Pré-condição de todos os bugs, salvo indicação: aplicação aberta em `http
 
 **Esperado:** “1 item left” no passo 3 e “0 items left” no passo 4. A especificação pede o número de tarefas pendentes.
 
-**Obtido:** “0 items left” no passo 3 e “-1 items left” no passo 4. Com 3 pendentes, aparece “2 items left”. O valor está sempre 1 abaixo do real.
+**Obtido:** “0 items left” no passo 3 e “-1 items left” no passo 4. Com 3 pendentes, aparece “2 items left”. O valor está sempre 1 abaixo do real. O mesmo aparece no iPhone 13 Pro.
 
 <img src="evidencias/BUG-01-um-pendente.png" width="380" alt="1 pendente e o contador mostra 0 items left"> <img src="evidencias/BUG-01-todas-concluidas.png" width="380" alt="Todas concluídas e o contador mostra -1 items left">
 
@@ -201,7 +201,9 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Obtido:** o campo fica com 3 espaços (`"   "`). O placeholder não volta, e o próximo texto começa 3 espaços deslocado (`"   Pagar contas"`). O título salvo sai sem os espaços, porque a aplicação apara o texto, então o problema é de interface.
 
-<img src="evidencias/BUG-06.png" width="380" alt="Campo com 3 espaços selecionados">
+<img src="evidencias/BUG-06.png" width="380" alt="Campo com 3 espaços selecionados"> <img src="evidencias/BUG-06-iphone.png" width="180" alt="iPhone: lista vazia e campo sem placeholder">
+
+No iPhone 13 Pro (quadro à direita), depois de limpar todas as tarefas, o campo continua sem placeholder.
 
 **Causa provável:** `todoCtrl.js:44` faz `$scope.newTodo = '   ';`. A referência usa `''`.
 
@@ -262,7 +264,11 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Obtido:** a página é montada com cerca de 980 px de largura (`window.innerWidth` vale 981 no Chromium e 980 no WebKit, numa tela de 375 px) e reduzida para caber. O texto das tarefas fica com cerca de 9 px, o rodapé com cerca de 4 px, e os alvos de toque ficam pequenos.
 
-<img src="evidencias/BUG-09.png" width="260" alt="Página reduzida no celular">
+**No iPhone 13 Pro (iOS 26.0, Safari):** a página abre reduzida. Ao tocar no campo, o Safari dá zoom automático, como faz quando o texto de um campo fica pequeno demais na tela, e a página continua ampliada. Para ver a lista inteira é preciso afastar com pinça.
+
+<img src="evidencias/BUG-09.png" width="200" alt="Emulação: página reduzida"> <img src="evidencias/BUG-09-iphone-reduzida.png" width="200" alt="iPhone: página reduzida ao abrir"> <img src="evidencias/BUG-09-iphone-zoom.png" width="200" alt="iPhone: zoom automático ao tocar no campo">
+
+Da esquerda para a direita: emulação no Chromium, iPhone ao abrir e iPhone depois de tocar no campo.
 
 **Causa provável:** falta `<meta name="viewport" content="width=device-width, initial-scale=1">` no `<head>` do `index.html`.
 
@@ -325,7 +331,7 @@ Para limpar depois do teste: `Object.keys(localStorage).filter(k => k.startsWith
 
 **Esperado:** o botão de limpar concluídas fica oculto enquanto não houver tarefa concluída (especificação).
 
-**Obtido:** o botão “Clear” aparece, e o clique não faz nada.
+**Obtido:** o botão “Clear” aparece, e o clique não faz nada. O mesmo aparece no iPhone 13 Pro.
 
 <img src="evidencias/BUG-13.png" width="380" alt="Botão Clear visível sem concluídas">
 
@@ -509,7 +515,10 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 - Criar tarefa com Enter, aparar os espaços das pontas e ignorar entrada vazia ou só com espaços.
 - HTML e expressões do Angular digitados como tarefa (`<img src=x onerror=alert(1)>`, `{{7*7}}`) aparecem como texto, sem executar nada.
 - Acentos e emoji aparecem corretamente, e textos longos sem espaço quebram a linha sem criar rolagem horizontal.
-- Concluir e reabrir tarefa; botão excluir no hover; tocar na tarefa no celular mostra o botão excluir.
+- Concluir e reabrir tarefa; botão excluir no hover; no celular, tocar na tarefa mostra o × e tocar no × exclui (emulação e iPhone 13 Pro).
+- No iPhone 13 Pro, o duplo toque abre a edição e tocar fora do campo a fecha.
+
+<img src="evidencias/CT-53-iphone-duplo-toque.png" width="180" alt="iPhone: edição aberta pelo duplo toque">
 - Edição: duplo clique abre o campo com foco; Enter e sair do campo salvam; Esc descarta; texto vazio exclui a tarefa.
 - Filtros “All”, “active” e “Completed” mostram as tarefas certas, destacam o filtro e continuam aplicados depois de recarregar.
 - Tarefas e estados continuam lá depois de recarregar a página.
@@ -518,4 +527,4 @@ Estes comportamentos estão de acordo com a especificação nos três navegadore
 - Em janela de 320 px no desktop, não há rolagem horizontal. Com 1.000 tarefas, a lista carrega em cerca de 0,3 s e concluir, adicionar ou marcar todas leva até 0,2 s (Chromium, máquina local).
 - Não há arquivos sensíveis expostos no domínio (`.git`, `package.json`): todos respondem 404.
 
-**Limitações:** não testei Safari e Chrome em aparelhos reais (usei o motor WebKit e a emulação de celular do Chromium) nem leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado. O duplo toque para editar no celular funcionou na emulação do Chromium; na emulação do WebKit, a ferramenta não consegue tocar no elemento, então falta confirmar num iPhone real.
+**Limitações:** em aparelho real, testei só um iPhone 13 Pro (iOS 26.0, Safari): layout, toque, duplo toque, exclusão, filtros e contador. Não testei Android real, não repeti no iPhone o cenário de cookies bloqueados do BUG-05 e não usei leitores de tela reais (usei a árvore de acessibilidade e o axe-core). O modo com backend (`/api`) não existe neste ambiente, então não foi testado.

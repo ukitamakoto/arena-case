@@ -20,7 +20,7 @@ Encontrar o máximo de defeitos na aplicação <https://todolist.james.am/#/> e 
 
 - Modo com backend. A aplicação procura `/api`, recebe 404 e usa só o `localStorage`, então esse modo não existe neste ambiente.
 - Carga e desempenho. É uma página estática, sem servidor de aplicação. Fiz só uma checagem de volume com 1.000 tarefas.
-- Aparelhos reais e leitores de tela reais. Usei emulação, o motor WebKit, a árvore de acessibilidade e o axe-core.
+- Android real e leitores de tela reais. No celular, usei emulação e um iPhone 13 Pro; na acessibilidade, a árvore de acessibilidade e o axe-core.
 
 ## 3. Oráculos
 
@@ -35,7 +35,7 @@ Encontrar o máximo de defeitos na aplicação <https://todolist.james.am/#/> e 
 |---|---|
 | Sistema | macOS 26.2 |
 | Navegadores | Google Chrome 156.0.8078.48; Chromium 156.0.8078.4, Firefox 157.0 e WebKit 27.2 via Playwright 1.64.1 |
-| Celular | emulação de 375×667 px (`is_mobile`, toque) no Chromium e no WebKit |
+| Celular | emulação de 375×667 px (`is_mobile`, toque) no Chromium e no WebKit; iPhone 13 Pro, iOS 26.0, Safari em aba privada |
 | Aplicação | arquivos de 22/12/2019 (cabeçalho `Last-Modified`), AngularJS 1.4.3 |
 | Ferramentas | DevTools, axe-core 4.10.2, `npm audit`, Python 3.12, pytest e Playwright |
 
